@@ -11,9 +11,13 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function ()
+{
     return view('welcome');
 });
 
-Route::get('/check', "CheckController@index")->name("check");
-Route::post('/check', "CheckController@save")->name("check");
+Route::group(['prefix' => 'test'], function ()
+{
+    Route::get('{format}', "TestController@show")->name("test");
+    Route::post('{format}', "TestController@save")->name("test");
+});

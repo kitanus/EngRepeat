@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-4" ></div>
             <div class="col-md-4" >
-                <form method="post" action="{{ route("check") }}">
+                <form method="post" action="{{ route("test", ["format" => $format]) }}">
                     {{ csrf_field() }}
                     <table class="table table-striped" >
                         <tr>
@@ -33,13 +33,13 @@
                             <tr>
                                 <td>{{ $word->word }}</td>
                                 <td>
-                                    <input type="text" name="order[{{ $loop->index }}]"
-                                           value="{{ ($post !== NULL) ? $lastAnswer[$loop->index] : "" }}"
+                                    <input type="text" name="answer[{{ $loop->index }}]"
+                                           value="{{ (!empty($lastAnswer)) ? $lastAnswer[$loop->index] : "" }}"
                                     >
                                 </td>
                                 @if($post !== NULL)
                                     <td>{{ $word->translate }}</td>
-                                    <td>{{ $word->win-$word->lose }}</td>
+                                    <td>{{ $status[$loop->index]->win-$status[$loop->index]->lose }}</td>
                                 @else
                                     <td></td>
                                     <td></td>
@@ -55,7 +55,7 @@
                 </form>
                 <div class="row" >
                     <div class="col-md-4"></div>
-                    <a href="{{ route("check") }}" class="btn btn-primary col-md-4 mt-1 mb-1">Заново</a>
+                    <a href="{{ route("test", ["format" => $format]) }}" class="btn btn-primary col-md-4 mt-1 mb-1">Заново</a>
                     <div class="col-md-4"></div>
                 </div>
 
