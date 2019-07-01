@@ -13,24 +13,9 @@ class TestController extends Controller
         $data = [
             "lastAnswer" => [],
             "post" => null,
-            "format" => $format
+            "format" => $format,
+            "words" => $this->getFormatDictionary($format)
         ];
-
-        switch ($format)
-        {
-            case "rus":
-                $data["words"] = DB::table('dictionary')->leftJoin('rus_to_eng', 'dictionary.id', '=', 'rus_to_eng.dictionary_id')->get();
-                break;
-            case "eng":
-                $data["words"] = DB::table('dictionary')->leftJoin('eng_to_rus', 'dictionary.id', '=', 'eng_to_rus.dictionary_id')->get();
-                foreach ($data["words"] as $key => $value)
-                {
-                    $mediator = $value->word;
-                    $data["words"][$key]->word = $value->translate;
-                    $data["words"][$key]->translate = $mediator;
-                }
-                break;
-        }
 
         return $view = view('test', $data);
     }
@@ -39,7 +24,6 @@ class TestController extends Controller
     {
 
         $words = DB::table('dictionary')->get();
-        $etr = DB::table('dictionary')->get();
 
         foreach($words as $key => $value)
         {
@@ -56,63 +40,20 @@ class TestController extends Controller
 
         foreach (array_intersect($this->upperArr($translate), $this->upperArr($request->answer)) as $keyWin => $valueWin)
         {
-            switch ($format)
-            {
-                case "rus":
-                    $store = DB::table("rus_to_eng")->get();
-                    DB::table('rus_to_eng')
-                        ->where('dictionary_id', $keyWin+1)
-                        ->update(['win' => $store[$keyWin]->win+1]);
-                    break;
-                case "eng":
-                    $store = DB::table("eng_to_rus")->get();
-                    DB::table('eng_to_rus')
-                        ->where('dictionary_id', $keyWin+1)
-                        ->update(['win' => $store[$keyWin]->win+1]);
-                    break;
-            }
+            $this->setNewStatus($format, "win", $keyWin);
         }
 
         foreach (array_diff($this->upperArr($translate), $this->upperArr($request->answer)) as $keyLose => $valueLose)
         {
-            switch ($format)
-            {
-                case "rus":
-                    $store = DB::table("rus_to_eng")->get();
-                    DB::table('rus_to_eng')
-                        ->where('dictionary_id', $keyLose+1)
-                        ->update(['lose' => $store[$keyLose]->lose+1]);
-                    break;
-                case "eng":
-                    $store = DB::table("eng_to_rus")->get();
-                    DB::table('eng_to_rus')
-                        ->where('dictionary_id', $keyLose+1)
-                        ->update(['lose' => $store[$keyLose]->lose+1]);
-                    break;
-            }
+            $this->setNewStatus($format, "lose", $keyLose);
         }
 
         $data = [
-            "lastAnswer" => $translate,
+            "lastAnswer" => $request->answer,
             "post" => true,
-            "format" => $format
+            "format" => $format,
+            "words" => $this->getFormatDictionary($format)
         ];
-
-        switch ($format)
-        {
-            case "rus":
-                $data["words"] = DB::table('dictionary')->get();
-                break;
-            case "eng":
-                $data["words"] = DB::table('dictionary')->get();
-                foreach ($data["words"] as $key => $value)
-                {
-                    $mediator = $value->word;
-                    $data["words"][$key]->word = $value->translate;
-                    $data["words"][$key]->translate = $mediator;
-                }
-                break;
-        }
 
         switch ($format)
         {
@@ -120,7 +61,6 @@ class TestController extends Controller
                 $data["status"] = DB::table("rus_to_eng")->get();
                 break;
             case "eng":
-                var_dump($translate);
                 $data["status"] = DB::table("eng_to_rus")->get();
                 break;
         }
@@ -138,4 +78,49 @@ class TestController extends Controller
         return $arr;
     }
 
+    public function getFormatDictionary($format)
+    {
+        switch ($format)
+        {
+            case "rus":
+                $dictionary = DB::table('dictionary')
+                    ->leftJoin('rus_to_eng', 'dictionary.id', '=', 'rus_to_eng.dictionary_id')
+                    ->get();
+                break;
+            case "eng":
+                $dictionary = DB::table('dictionary')
+                    ->leftJoin('eng_to_rus', 'dictionary.id', '=', 'eng_to_rus.dictionary_id')
+                    ->get();
+                foreach ($dictionary as $key => $value)
+                {
+                    $mediator = $value->word;
+                    $dictionary[$key]->word = $value->translate;
+                    $dictionary[$key]->translate = $mediator;
+                }
+                break;
+            default:
+                $dictionary = null;
+        }
+
+        return $dictionary;
+    }
+
+    public function setNewStatus($format, $kind, $index)
+    {
+        switch ($format)
+        {
+            case "rus":
+                $store = DB::table("rus_to_eng")->get();
+                DB::table('rus_to_eng')
+                    ->where('dictionary_id', $index+1)
+                    ->update([$kind => ($kind == "win")?$store[$index]->win+1:$store[$index]->lose+1]);
+                break;
+            case "eng":
+                $store = DB::table("eng_to_rus")->get();
+                DB::table('eng_to_rus')
+                    ->where('dictionary_id', $index+1)
+                    ->update([$kind => ($kind == "win")?$store[$index]->win+1:$store[$index]->lose+1]);
+                break;
+        }
+    }
 }

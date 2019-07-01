@@ -15,8 +15,18 @@
 
     <div class="content-fluid mt-3">
         <div class="row">
-            <div class="col-md-4" ></div>
-            <div class="col-md-4" >
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="row">
+                    <a href="{{ route("test", ["format" => "eng"]) }}" class="btn btn-primary col-md col-sm ml-1 mr-1">Англ.</a>
+                    <a href="{{ route("test", ["format" => "rus"]) }}" class="btn btn-primary col-md col-sm ml-1 mr-1">Рус.</a>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-md" ></div>
+            <div class="col-md">
                 <form method="post" action="{{ route("test", ["format" => $format]) }}">
                     {{ csrf_field() }}
                     <table class="table table-striped" >
@@ -53,14 +63,9 @@
                         <div class="col-md-4"></div>
                     </div>
                 </form>
-                <div class="row" >
-                    <div class="col-md-4"></div>
-                    <a href="{{ route("test", ["format" => $format]) }}" class="btn btn-primary col-md-4 mt-1 mb-1">Заново</a>
-                    <div class="col-md-4"></div>
-                </div>
 
             </div>
-            <div class="col-md-4" ></div>
+            <div class="col-md" ></div>
         </div>
     </div>
 </div>
