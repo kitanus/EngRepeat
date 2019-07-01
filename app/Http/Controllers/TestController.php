@@ -93,7 +93,6 @@ class TestController extends Controller
         }
 
         $data = [
-            "words" => DB::table('dictionary')->get(),
             "lastAnswer" => $translate,
             "post" => true,
             "format" => $format
@@ -102,9 +101,26 @@ class TestController extends Controller
         switch ($format)
         {
             case "rus":
+                $data["words"] = DB::table('dictionary')->get();
+                break;
+            case "eng":
+                $data["words"] = DB::table('dictionary')->get();
+                foreach ($data["words"] as $key => $value)
+                {
+                    $mediator = $value->word;
+                    $data["words"][$key]->word = $value->translate;
+                    $data["words"][$key]->translate = $mediator;
+                }
+                break;
+        }
+
+        switch ($format)
+        {
+            case "rus":
                 $data["status"] = DB::table("rus_to_eng")->get();
                 break;
             case "eng":
+                var_dump($translate);
                 $data["status"] = DB::table("eng_to_rus")->get();
                 break;
         }
