@@ -11,9 +11,22 @@
 
 </head>
 <body>
-<div class="flex-center position-ref full-height">
+    <header class="content-fluid">
+        <nav class="navbar navbar-expand-lg">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ route("test", ["format" => $format]) }}">Home<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Dictionary</a>
+                </li>
+                <li class="nav-item dropdown">
 
-    <div class="content-fluid mt-3">
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="content-fluid mt-3">
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-4">
@@ -67,7 +80,6 @@
             </div>
             <div class="col-md" ></div>
         </div>
-    </div>
-</div>
+    </main>
 </body>
 </html>
