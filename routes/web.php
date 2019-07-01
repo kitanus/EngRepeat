@@ -21,3 +21,5 @@ Route::group(['prefix' => 'test'], function ()
     Route::get('{format}', "TestController@show")->name("test");
     Route::post('{format}', "TestController@save")->name("test");
 });
+
+Route::get('dictionary', "DictionaryController@show")->name("dictionary");

@@ -18,7 +18,7 @@
                     <a class="nav-link" href="{{ route("test", ["format" => $format]) }}">Home<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Dictionary</a>
+                    <a class="nav-link" href="{{ route("dictionary") }}">Dictionary</a>
                 </li>
                 <li class="nav-item dropdown">
 
