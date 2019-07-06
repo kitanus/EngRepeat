@@ -110,13 +110,33 @@ class TestController extends Controller
         switch ($format)
         {
             case "rus":
+                if(count(DB::table('rus_to_eng')->where("dictionary_id", $index+1)->get()) === 0)
+                {
+                    DB::table('rus_to_eng')->insert([
+                        "win" => 0,
+                        "lose" => 0,
+                        "dictionary_id" => $index+1
+                    ]);
+                }
+
                 $store = DB::table("rus_to_eng")->get();
+
                 DB::table('rus_to_eng')
                     ->where('dictionary_id', $index+1)
                     ->update([$kind => ($kind == "win")?$store[$index]->win+1:$store[$index]->lose+1]);
                 break;
             case "eng":
+                if(count(DB::table('eng_to_rus')->where("dictionary_id", $index+1)->get()) === 0)
+                {
+                    DB::table('eng_to_rus')->insert([
+                        "win" => 0,
+                        "lose" => 0,
+                        "dictionary_id" => $index+1
+                    ]);
+                }
+
                 $store = DB::table("eng_to_rus")->get();
+
                 DB::table('eng_to_rus')
                     ->where('dictionary_id', $index+1)
                     ->update([$kind => ($kind == "win")?$store[$index]->win+1:$store[$index]->lose+1]);

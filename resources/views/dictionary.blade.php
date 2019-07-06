@@ -34,8 +34,66 @@
     </div>
     <div class="row">
         <div class="col-md"></div>
+        <div class="col-md"><h2 class="h2 text-center">Создать записи</h2></div>
+        <div class="col-md"></div>
+    </div>
+    <div class="row">
+        <div class="col-md"></div>
         <div class="col-md">
-            <form action="{{ route("dictionary") }}">
+            @if(empty($counts))
+            <form class="container-fluid" action="{{ route("dictionary.new") }}" method="post">
+                {{ csrf_field() }}
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md"><p class="align-middle" style="line-height: 40px;">Сколько записей:</p></div>
+                        <input type="text" class="col-md" name="count">
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md"></div>
+                        <button class="btn col-md">Создать</button>
+                        <div class="col-md"></div>
+                    </div>
+            </form>
+            @else
+                <form class="container-fluid" action="{{ route("dictionary.record") }}" method="post">
+                    {{ csrf_field() }}
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md"><p>Слово</p></div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md"><p>Перевод</p></div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    @for($i=0; $i<$counts; $i++)
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <input type="text" class="col-md" name="word[{{ $i }}]">
+                            <div class="col-md-1"></div>
+                            <input type="text" class="col-md" name="translate[{{ $i }}]">
+                            <div class="col-md-1"></div>
+                        </div>
+                    @endfor
+                    <div class="row">
+                        <div class="col-md"></div>
+                        <button class="btn col-md">Сохранить</button>
+                        <div class="col-md"></div>
+                    </div>
+                </form>
+            @endif
+        </div>
+        <div class="col-md"></div>
+    </div>
+    <div class="row">
+        <div class="col-md"></div>
+        <div class="col-md"><h2 class="h2 text-center">Изменение словаря</h2></div>
+        <div class="col-md"></div>
+    </div>
+    <div class="row">
+        <div class="col-md"></div>
+        <div class="col-md">
+            <form action="{{ route("dictionary.update") }}" method="post">
+                {{ csrf_field() }}
                 <table class="table table-striped">
                     <tr>
                         <th>id</th>
@@ -44,15 +102,15 @@
                     </tr>
                     @foreach($dictionaries as $dictionary)
                         <tr>
-                            <td name="id[{{$loop->index}}]"><input type="text" value="{{ $dictionary->id }}"></td>
-                            <td name="word[{{$loop->index}}]"><input type="text" value="{{ $dictionary->word }}"></td>
-                            <td name="translate[{{$loop->index}}]"><input type="text" value="{{ $dictionary->translate }}"></td>
+                            <td><input type="text" name="id[{{$loop->index}}]" value="{{ $dictionary->id }}"></td>
+                            <td><input type="text" name="word[{{$loop->index}}]" value="{{ $dictionary->word }}"></td>
+                            <td><input type="text" name="translate[{{$loop->index}}]" value="{{ $dictionary->translate }}"></td>
                         </tr>
                     @endforeach
                 </table>
                 <div class="row">
                     <div class="col-md"></div>
-                    <input type="submit" class="col-md btn" name="action" value="Save">
+                    <button class="col-md btn">Сохранить</button>
                     <div class="col-md"></div>
                 </div>
             </form>
