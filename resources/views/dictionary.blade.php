@@ -99,12 +99,14 @@
                         <th>id</th>
                         <th>Слово</th>
                         <th>Перевод</th>
+                        <th></th>
                     </tr>
                     @foreach($dictionaries as $dictionary)
                         <tr>
                             <td><input type="text" name="id[{{$loop->index}}]" value="{{ $dictionary->id }}"></td>
                             <td><input type="text" name="word[{{$loop->index}}]" value="{{ $dictionary->word }}"></td>
                             <td><input type="text" name="translate[{{$loop->index}}]" value="{{ $dictionary->translate }}"></td>
+                            <td><a href="{{ route("dictionary.delete") }}?id={{ $dictionary->id }}">Удалить</a></td>
                         </tr>
                     @endforeach
                 </table>

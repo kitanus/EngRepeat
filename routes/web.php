@@ -27,3 +27,4 @@ Route::post('dictionary/new', "DictionaryController@new")->name("dictionary.new"
 Route::post('dictionary/update', "DictionaryController@update")->name("dictionary.update");
 Route::post('dictionary/save', "DictionaryController@save")->name("dictionary.save");
 Route::post('dictionary/record', "DictionaryController@record")->name("dictionary.record");
+Route::get('dictionary/delete', "DictionaryController@delete")->name("dictionary.delete");

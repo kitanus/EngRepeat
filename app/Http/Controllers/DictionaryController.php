@@ -47,11 +47,7 @@ class DictionaryController extends Controller
                 $rows
             );
 
-        $dictionary = DB::table("dictionary")->get();
-
-        return view('dictionary', [
-            "dictionaries" => $dictionary
-        ]);
+        return redirect()->route('dictionary');
     }
 
     public function update(Request $request)
@@ -66,10 +62,15 @@ class DictionaryController extends Controller
                 ]);
         }
 
-        $dictionary = DB::table("dictionary")->get();
+        return redirect()->route('dictionary');
+    }
 
-        return view('dictionary', [
-            "dictionaries" => $dictionary
-        ]);
+    public function delete(Request $request)
+    {
+        DB::table('dictionary')->where("id", $request->id)->delete();
+        DB::table('eng_to_rus')->where("dictionary_id", $request->id)->delete();
+        DB::table('rus_to_eng')->where("dictionary_id", $request->id)->delete();
+
+        return redirect()->route('dictionary');
     }
 }
