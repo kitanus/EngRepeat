@@ -18,13 +18,20 @@ Route::get('/', function ()
 
 Route::group(['prefix' => 'test'], function ()
 {
-    Route::get('{format}', "TestController@show")->name("test");
-    Route::post('{format}', "TestController@save")->name("test");
+//    Route::get('{format}', "TestController@show")->name("test");
+    Route::get('eng', "Test\EngController@show")->name("eng.test");
+    Route::get('rus', "Test\RusController@show")->name("rus.test");
+    Route::post('eng', "Test\EngController@save")->name("eng.test");
+    Route::post('rus', "Test\RusController@save")->name("rus.test");
 });
 
-Route::get('dictionary', "DictionaryController@show")->name("dictionary");
-Route::post('dictionary/new', "DictionaryController@new")->name("dictionary.new");
-Route::post('dictionary/update', "DictionaryController@update")->name("dictionary.update");
-Route::post('dictionary/save', "DictionaryController@save")->name("dictionary.save");
-Route::post('dictionary/record', "DictionaryController@record")->name("dictionary.record");
-Route::get('dictionary/delete', "DictionaryController@delete")->name("dictionary.delete");
+Route::group(['prefix' => 'dictionary'], function ()
+{
+    Route::get('/', "DictionaryController@show")->name("dictionary");
+    Route::post('new', "DictionaryController@new")->name("dictionary.new");
+    Route::post('update', "DictionaryController@update")->name("dictionary.update");
+    Route::post('save', "DictionaryController@save")->name("dictionary.save");
+    Route::post('record', "DictionaryController@record")->name("dictionary.record");
+    Route::get('delete', "DictionaryController@delete")->name("dictionary.delete");
+});
+

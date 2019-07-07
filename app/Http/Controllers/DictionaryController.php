@@ -28,7 +28,6 @@ class DictionaryController extends Controller
 
     public function record(Request $request)
     {
-
         $rows = [];
 
         for($i=0; $i<count($request->word); $i++)
