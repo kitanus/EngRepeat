@@ -11,7 +11,7 @@ class DictionaryController extends Controller
     {
         $dictionary = DB::table("dictionary")->get();
 
-        return view('dictionary', [
+        return view('layout/dictionary', [
             "dictionaries" => $dictionary
         ]);
     }
@@ -20,7 +20,7 @@ class DictionaryController extends Controller
     {
         $dictionary = DB::table("dictionary")->get();
 
-        return view('dictionary', [
+        return view('layout/dictionary', [
             "counts" => $request->count,
             "dictionaries" => $dictionary
     ]);
@@ -69,6 +69,13 @@ class DictionaryController extends Controller
         DB::table('dictionary')->where("id", $request->id)->delete();
         DB::table('eng_to_rus')->where("dictionary_id", $request->id)->delete();
         DB::table('rus_to_eng')->where("dictionary_id", $request->id)->delete();
+
+        return redirect()->route('dictionary');
+    }
+
+    public function reset(Request $request)
+    {
+        DB::table($request->table)->truncate();
 
         return redirect()->route('dictionary');
     }

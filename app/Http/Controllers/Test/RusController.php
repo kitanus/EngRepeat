@@ -27,7 +27,7 @@ class RusController extends TestController
             "format" => $this->format
         ];
 
-        return $view = view('test', $data);
+        return $view = view('layout/test', $data);
     }
 
     public function save(Request $request)
@@ -55,6 +55,6 @@ class RusController extends TestController
         $data["format"] = $this->format;
         $data["words"] = $this->dictionary;
 
-        return view('test', $data);
+        return view('layout/test', $data);
     }
 }

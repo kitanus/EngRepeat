@@ -33,5 +33,6 @@ Route::group(['prefix' => 'dictionary'], function ()
     Route::post('save', "DictionaryController@save")->name("dictionary.save");
     Route::post('record', "DictionaryController@record")->name("dictionary.record");
     Route::get('delete', "DictionaryController@delete")->name("dictionary.delete");
+    Route::get('reset', "DictionaryController@reset")->name("dictionary.reset");
 });
 
