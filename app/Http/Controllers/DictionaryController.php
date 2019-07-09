@@ -2,49 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dictionary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DictionaryController extends Controller
 {
+
+    protected $dictionary;
+
+    public function __construct()
+    {
+        $this->dictionary = Dictionary::all();
+    }
+
     public function show()
     {
-        $dictionary = DB::table("dictionary")->get();
-
         return view('layout/dictionary', [
-            "dictionaries" => $dictionary
+            "dictionaries" => $this->dictionary
         ]);
     }
 
     public function new(Request $request)
     {
-        $dictionary = DB::table("dictionary")->get();
-
         return view('layout/dictionary', [
             "counts" => $request->count,
-            "dictionaries" => $dictionary
+            "dictionaries" => $this->dictionary
     ]);
     }
 
     public function record(Request $request)
     {
-        $rows = [];
-
         for($i=0; $i<count($request->word); $i++)
         {
             if(!is_null($request->word[$i]) && !is_null($request->translate[$i]))
             {
-                $rows[$i] = [
-                    "word" => $request->word[$i],
-                    "translate" => $request->translate[$i]
-                ];
+                $dictionary = new Dictionary();
+
+                $dictionary->word = $request->word[$i];
+                $dictionary->translate = $request->translate[$i];
+
+                $dictionary->save();
             }
         }
-
-        DB::table('dictionary')
-            ->insert(
-                $rows
-            );
 
         return redirect()->route('dictionary');
     }
@@ -53,12 +53,12 @@ class DictionaryController extends Controller
     {
         foreach($request->id as $keyId => $valueId)
         {
-            DB::table('dictionary')
-                ->where('id', $valueId)
-                ->update([
-                    'word' => $request->word[$keyId],
-                    'translate' => $request->translate[$keyId]
-                ]);
+            $dictionary = Dictionary::find($valueId);
+
+            $dictionary->word = $request->word[$keyId];
+            $dictionary->translate = $request->translate[$keyId];
+
+            $dictionary->save();
         }
 
         return redirect()->route('dictionary');
@@ -66,7 +66,7 @@ class DictionaryController extends Controller
 
     public function delete(Request $request)
     {
-        DB::table('dictionary')->where("id", $request->id)->delete();
+        Dictionary::where("id", $request->id)->delete();
         DB::table('eng_to_rus')->where("dictionary_id", $request->id)->delete();
         DB::table('rus_to_eng')->where("dictionary_id", $request->id)->delete();
 

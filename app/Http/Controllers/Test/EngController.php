@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Test;
 
 use App\Http\Controllers\TestController;
+use App\Models\EngToRus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,9 +14,12 @@ class EngController extends TestController
 
     public function __construct()
     {
-        $this->dictionary = $this->reverseArr(DB::table('dictionary')
-            ->leftJoin('eng_to_rus', 'dictionary.id', '=', 'eng_to_rus.dictionary_id')
-            ->get(), "word", "translate");
+//        $this->dictionary = $this->reverseArr(DB::table('dictionary')
+//            ->leftJoin('eng_to_rus', 'dictionary.id', '=', 'eng_to_rus.dictionary_id')
+//            ->get(), "word", "translate");
+        $engRus = new EngToRus();
+        dd($engRus->dictionary());
+        $this->dictionary = $this->reverseArr(EngToRus::find(1)->dictionary, "word", "translate");
     }
 
     public function show()
