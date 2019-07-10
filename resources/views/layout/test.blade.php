@@ -30,14 +30,14 @@
                     </tr>
                     @foreach($words as $word)
                         <tr>
-                            <td>{{ $word->word }}</td>
+                            <td>{{ $word->dictionary->word }}</td>
                             <td>
                                 <input type="text" name="answer[{{ $loop->index }}]"
                                        value="{{ (!empty($lastAnswer)) ? $lastAnswer[$loop->index] : "" }}"
                                 >
                             </td>
                             @if($post !== NULL)
-                                <td>{{ $word->translate }}</td>
+                                <td>{{ $word->dictionary->translate }}</td>
                                 <td>{{ $word->win-$word->lose }}</td>
                             @else
                                 <td></td>

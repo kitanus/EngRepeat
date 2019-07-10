@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dictionary;
+use App\Models\EngToRus;
+use App\Models\RusToEng;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -67,8 +69,8 @@ class DictionaryController extends Controller
     public function delete(Request $request)
     {
         Dictionary::where("id", $request->id)->delete();
-        DB::table('eng_to_rus')->where("dictionary_id", $request->id)->delete();
-        DB::table('rus_to_eng')->where("dictionary_id", $request->id)->delete();
+        EngToRus::where("id", $request->id)->delete();
+        RusToEng::where("id", $request->id)->delete();
 
         return redirect()->route('dictionary');
     }
@@ -76,6 +78,31 @@ class DictionaryController extends Controller
     public function reset(Request $request)
     {
         DB::table($request->table)->truncate();
+
+        foreach (Dictionary::all() as $index => $value)
+        {
+            if(EngToRus::where("dictionary_id", $value->id)->count() === 0)
+            {
+                $engToRus = new EngToRus();
+
+                $engToRus->win = 0;
+                $engToRus->lose = 0;
+                $engToRus->dictionary_id = $value->id;
+
+                $engToRus->save();
+            }
+
+            if(RusToEng::where("dictionary_id", 1)->count() === 0)
+            {
+                $rusToEng = new EngToRus();
+
+                $rusToEng->win = 0;
+                $rusToEng->lose = 0;
+                $rusToEng->dictionary_id = $value->id;
+
+                $rusToEng->save();
+            }
+        }
 
         return redirect()->route('dictionary');
     }

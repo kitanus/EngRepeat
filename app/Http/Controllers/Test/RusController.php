@@ -3,27 +3,26 @@
 namespace App\Http\Controllers\Test;
 
 use App\Http\Controllers\TestController;
+use App\Models\RusToEng;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RusController extends TestController
 {
-    protected $dictionary;
+    protected $rusToEng;
     protected $format = "rus";
 
     public function __construct()
     {
-        $this->dictionary = DB::table('dictionary')
-            ->leftJoin('rus_to_eng', 'dictionary.id', '=', 'rus_to_eng.dictionary_id')
-            ->get();
+        $this->rusToEng = RusToEng::with('dictionary')->get();
     }
 
     public function show()
     {
+
         $data = [
             "lastAnswer" => [],
             "post" => null,
-            "words" => $this->dictionary,
+            "words" => $this->rusToEng,
             "format" => $this->format
         ];
 
@@ -32,28 +31,29 @@ class RusController extends TestController
 
     public function save(Request $request)
     {
+
         $data = [
             "lastAnswer" => $request->answer,
             "post" => true
         ];
 
-        foreach ($this->dictionary as $key => $value)
+        foreach ($this->rusToEng as $key => $value)
         {
-            $translate[$key] = $value->translate;
+            $translate[$key] = $value->dictionary->translate;
         }
 
         foreach (array_intersect($this->upperArr($translate), $this->upperArr($request->answer)) as $keyWin => $valueWin)
         {
-            $this->setResult("rus_to_eng","win", $keyWin);
+            $this->setResult((new RusToEng()),"win", $keyWin);
         }
 
         foreach (array_diff($this->upperArr($translate), $this->upperArr($request->answer)) as $keyLose => $valueLose)
         {
-            $this->setResult("rus_to_eng","lose", $keyLose);
+            $this->setResult((new RusToEng()),"lose", $keyLose);
         }
 
         $data["format"] = $this->format;
-        $data["words"] = $this->dictionary;
+        $data["words"] = RusToEng::with('dictionary')->get();
 
         return view('layout/test', $data);
     }

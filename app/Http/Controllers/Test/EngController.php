@@ -5,21 +5,15 @@ namespace App\Http\Controllers\Test;
 use App\Http\Controllers\TestController;
 use App\Models\EngToRus;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class EngController extends TestController
 {
-    protected $dictionary;
+    protected $engToRus;
     protected $format = "eng";
 
     public function __construct()
     {
-//        $this->dictionary = $this->reverseArr(DB::table('dictionary')
-//            ->leftJoin('eng_to_rus', 'dictionary.id', '=', 'eng_to_rus.dictionary_id')
-//            ->get(), "word", "translate");
-        $engRus = new EngToRus();
-        dd($engRus->dictionary());
-        $this->dictionary = $this->reverseArr(EngToRus::find(1)->dictionary, "word", "translate");
+        $this->engToRus = $this->reverseArr(EngToRus::with('dictionary')->get(), "word", "translate");
     }
 
     public function show()
@@ -27,7 +21,7 @@ class EngController extends TestController
         $data = [
             "lastAnswer" => [],
             "post" => null,
-            "words" => $this->dictionary,
+            "words" => $this->engToRus,
             "format" => $this->format
         ];
 
@@ -41,23 +35,23 @@ class EngController extends TestController
             "post" => true
         ];
 
-        foreach ($this->dictionary as $key => $value)
+        foreach ($this->engToRus as $key => $value)
         {
-            $translate[$key] = $value->translate;
+            $translate[$key] = $value->dictionary->translate;
         }
 
         foreach (array_intersect($this->upperArr($translate), $this->upperArr($request->answer)) as $keyWin => $valueWin)
         {
-            $this->setResult("eng_to_rus","win", $keyWin);
+            $this->setResult((new EngToRus()),"win", $keyWin);
         }
 
         foreach (array_diff($this->upperArr($translate), $this->upperArr($request->answer)) as $keyLose => $valueLose)
         {
-            $this->setResult("eng_to_rus","lose", $keyLose);
+            $this->setResult((new EngToRus()),"lose", $keyLose);
         }
 
         $data["format"] = $this->format;
-        $data["words"] = $this->dictionary;
+        $data["words"] = $this->reverseArr(EngToRus::with('dictionary')->get(), "word", "translate");
 
         return view('layout/test', $data);
     }
