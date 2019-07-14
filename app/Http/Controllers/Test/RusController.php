@@ -14,6 +14,7 @@ class RusController extends TestController
     public function __construct()
     {
         $this->rusToEng = RusToEng::with('dictionary')->get();
+        $this->table = (new RusToEng());
     }
 
     public function show()
@@ -39,18 +40,10 @@ class RusController extends TestController
 
         foreach ($this->rusToEng as $key => $value)
         {
-            $translate[$key] = $value->dictionary->translate;
+            $this->translate[$key] = $value->dictionary->translate;
         }
 
-        foreach (array_intersect($this->upperArr($translate), $this->upperArr($request->answer)) as $keyWin => $valueWin)
-        {
-            $this->setResult((new RusToEng()),"win", $keyWin);
-        }
-
-        foreach (array_diff($this->upperArr($translate), $this->upperArr($request->answer)) as $keyLose => $valueLose)
-        {
-            $this->setResult((new RusToEng()),"lose", $keyLose);
-        }
+        $this->saveResult($request);
 
         $data["format"] = $this->format;
         $data["words"] = RusToEng::with('dictionary')->get();

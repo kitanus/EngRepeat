@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dictionary;
-use App\Models\EngToRus;
-use App\Models\RusToEng;
+use App\Models\Languages\EngToRus;
+use App\Models\Languages\RusToEng;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

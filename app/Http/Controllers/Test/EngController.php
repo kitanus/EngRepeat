@@ -14,6 +14,7 @@ class EngController extends TestController
     public function __construct()
     {
         $this->engToRus = $this->reverseArr(EngToRus::with('dictionary')->get(), "word", "translate");
+        $this->table = (new EngToRus());
     }
 
     public function show()
@@ -37,18 +38,10 @@ class EngController extends TestController
 
         foreach ($this->engToRus as $key => $value)
         {
-            $translate[$key] = $value->dictionary->translate;
+            $this->translate[$key] = $value->dictionary->translate;
         }
 
-        foreach (array_intersect($this->upperArr($translate), $this->upperArr($request->answer)) as $keyWin => $valueWin)
-        {
-            $this->setResult((new EngToRus()),"win", $keyWin);
-        }
-
-        foreach (array_diff($this->upperArr($translate), $this->upperArr($request->answer)) as $keyLose => $valueLose)
-        {
-            $this->setResult((new EngToRus()),"lose", $keyLose);
-        }
+        $this->saveResult($request);
 
         $data["format"] = $this->format;
         $data["words"] = $this->reverseArr(EngToRus::with('dictionary')->get(), "word", "translate");
