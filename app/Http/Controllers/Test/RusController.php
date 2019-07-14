@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Test;
 
 use App\Http\Controllers\TestController;
-use App\Models\RusToEng;
+use App\Models\Languages\RusToEng;
 use Illuminate\Http\Request;
 
 class RusController extends TestController

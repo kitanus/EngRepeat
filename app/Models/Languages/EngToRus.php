@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Languages;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\LanguageStatus;
 
-class EngToRus extends Model
+class EngToRus extends LanguageStatus
 {
     protected $table = 'eng_to_rus';
 

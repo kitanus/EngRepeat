@@ -39,12 +39,10 @@ class DictionaryController extends Controller
         {
             if(!is_null($request->word[$i]) && !is_null($request->translate[$i]))
             {
-                $dictionary = new Dictionary();
-
-                $dictionary->word = $request->word[$i];
-                $dictionary->translate = $request->translate[$i];
-
-                $dictionary->save();
+                (new Dictionary())->saveWord(
+                    $request->word[$i],
+                    $request->translate[$i]
+                );
             }
         }
 
@@ -57,10 +55,10 @@ class DictionaryController extends Controller
         {
             $dictionary = Dictionary::find($valueId);
 
-            $dictionary->word = $request->word[$keyId];
-            $dictionary->translate = $request->translate[$keyId];
-
-            $dictionary->save();
+            $dictionary->saveWord(
+                $request->word[$keyId],
+                $request->translate[$keyId]
+            );
         }
 
         return redirect()->route('dictionary');
@@ -78,31 +76,6 @@ class DictionaryController extends Controller
     public function reset(Request $request)
     {
         DB::table($request->table)->truncate();
-
-        foreach (Dictionary::all() as $index => $value)
-        {
-            if(EngToRus::where("dictionary_id", $value->id)->count() === 0)
-            {
-                $engToRus = new EngToRus();
-
-                $engToRus->win = 0;
-                $engToRus->lose = 0;
-                $engToRus->dictionary_id = $value->id;
-
-                $engToRus->save();
-            }
-
-            if(RusToEng::where("dictionary_id", 1)->count() === 0)
-            {
-                $rusToEng = new EngToRus();
-
-                $rusToEng->win = 0;
-                $rusToEng->lose = 0;
-                $rusToEng->dictionary_id = $value->id;
-
-                $rusToEng->save();
-            }
-        }
 
         return redirect()->route('dictionary');
     }
