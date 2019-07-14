@@ -31,7 +31,7 @@ Route::group(['prefix' => 'dictionary'], function ()
     Route::post('new', "DictionaryController@new")->name("dictionary.new");
     Route::post('update', "DictionaryController@update")->name("dictionary.update");
     Route::post('save', "DictionaryController@save")->name("dictionary.save");
-    Route::post('record', "DictionaryController@record")->name("dictionary.record");
+    Route::post('record', "DictionaryController@record")->name("dictionary.record")->middleware('check.repeat');
     Route::get('delete', "DictionaryController@delete")->name("dictionary.delete");
     Route::get('reset', "DictionaryController@reset")->name("dictionary.reset");
 });
